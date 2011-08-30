@@ -22,6 +22,7 @@ import java.io.IOException;
 import net.asfun.jangod.base.Application;
 import net.asfun.jangod.base.Configuration;
 import net.asfun.jangod.base.ResourceManager;
+import net.asfun.jangod.cache.NoopStorage;
 import net.asfun.jangod.cache.StatelessObjectStorage;
 import net.asfun.jangod.cache.SynchronousStorage;
 import net.asfun.jangod.parse.TokenParser;
@@ -40,13 +41,14 @@ public class ParseResultManager {
 	@SuppressWarnings("unchecked")
 	private void init(Configuration config) {
 		String storeClass = config.getProperty("parse.cache");
+		System.out.println("STORE CLASS: " + storeClass);
 		if ( storeClass == null ) {
-			cache = new SynchronousStorage<String, Node>();
+			cache = new NoopStorage<String, Node>();
 		} else {
 			try {
 				cache = (StatelessObjectStorage<String, Node>) Class.forName(storeClass).newInstance();
 			} catch (Exception e) {
-				cache = new SynchronousStorage<String, Node>();
+				cache = new NoopStorage<String, Node>();
 				JangodLogger.warning("Can't instance parser cacher(use default) >>> " + storeClass);
 			}
 		}
