@@ -45,13 +45,14 @@ public class ResourceManager {
 		}
 		
 		String storeClass = config.getProperty("file.cache");
+		System.out.println("STORE CLASS: " + storeClass);
 		if ( storeClass == null ) {
 			cache = new NoopStorage<String,String>();
 		} else {
 			try {
 				cache = (StatelessObjectStorage<String, String>) Class.forName(storeClass).newInstance();
 			} catch (Exception e) {
-				cache = new SynchronousStorage<String,String>();
+				cache = new NoopStorage<String,String>();
 				JangodLogger.warning("Can't instance file cacher(use default) >>> " + storeClass);
 			}
 		}
