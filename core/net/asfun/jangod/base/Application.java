@@ -46,6 +46,10 @@ public class Application {
 		config = ConfigInitializer.getConfig(configFile);
 	}
 	
+	public Application(Configuration config) {
+		this.config = config;
+	}
+	
 	public Map<String, Object> getGlobalBindings() {
 		return globalBindings;
 	}

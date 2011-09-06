@@ -18,7 +18,9 @@ package net.asfun.jangod.base;
 import static net.asfun.jangod.util.logging.JangodLogger;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
 
@@ -36,6 +38,8 @@ public class Configuration implements Cloneable{
 	private Locale locale;
 	private TimeZone timezone;
 	private String workspace;
+	
+	private Map<String,Object> bootstraps = new HashMap<String,Object>();
 	Properties properties = new Properties();
 	static final Configuration config;
 	
@@ -103,6 +107,14 @@ public class Configuration implements Cloneable{
 		}
 	}
 	
+	public Object getBootstrap(String key) {
+		return bootstraps.get(key);
+	}
+	
+	public void setBootstrap(String key, Object o) {
+		bootstraps.put(key, o);
+	}
+	
 	public String getProperty(String key, String defaultValue) {
 		return properties.getProperty(key, defaultValue);
 	}
@@ -119,6 +131,7 @@ public class Configuration implements Cloneable{
 		conf.timezone = config.timezone;
 		conf.workspace = config.workspace;
 		conf.properties = (Properties) config.properties.clone();
+		conf.bootstraps.putAll(config.bootstraps);
 		return conf;
 	}
 }

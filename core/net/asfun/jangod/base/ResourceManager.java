@@ -21,7 +21,6 @@ import java.io.IOException;
 
 import net.asfun.jangod.cache.NoopStorage;
 import net.asfun.jangod.cache.StatelessObjectStorage;
-import net.asfun.jangod.cache.SynchronousStorage;
 
 
 public class ResourceManager {
@@ -35,13 +34,22 @@ public class ResourceManager {
 	
 	@SuppressWarnings("unchecked")
 	private static void init() {
+		
 		Configuration config = Configuration.config;
-		String locaterClass = config.getProperty("file.locater", "net.asfun.jangod.base.FileLocater");
-		try {
-			locater = (ResourceLocater) Class.forName(locaterClass).newInstance();
-		} catch (Exception e) {
-			locater = new FileLocater();
-			JangodLogger.warning("Can't instance file loader(use default) >>> " + locaterClass);
+		locater = (ResourceLocater) config.getBootstrap("file.locator");
+		if (locater == null) {
+			Object locatorConfig = config.getProperty("file.locator");
+			
+			if (locatorConfig instanceof ResourceLocater) {
+				locater = (ResourceLocater)locatorConfig;
+			} else {		
+				try {
+					locater = new FileLocater();
+				} catch (Exception e) {
+					locater = new FileLocater();
+					JangodLogger.warning("Can't instance file loader(use default) >>> " + locatorConfig);
+				}		
+			}
 		}
 		
 		String storeClass = config.getProperty("file.cache");
